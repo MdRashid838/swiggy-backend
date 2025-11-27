@@ -113,3 +113,54 @@ exports.deleteMenuItem = async (req, res) => {
         res.status(500).json({ error: err.message });
     }
 };
+
+// GET ALL MENU ITEMS WITH FILTER
+exports.getMenuItems = async (req, res) => {
+try {
+const { category, minPrice, maxPrice, isVeg, isAvailable } = req.query;
+
+
+// Build filter object dynamically
+const filter = {};
+
+if (category) filter.category = category;
+if (isVeg !== undefined) filter.isVeg = isVeg === "true";
+if (isAvailable !== undefined) filter.isAvailable = isAvailable === "true";
+if (minPrice || maxPrice) {
+  filter.price = {};
+  if (minPrice) filter.price.$gte = Number(minPrice);
+  if (maxPrice) filter.price.$lte = Number(maxPrice);
+}
+
+const menuItems = await MenuItem.find(filter).populate("restaurant", "name");
+
+res.status(200).json({ success: true, data: menuItems });
+
+} catch (error) {
+console.error(error);
+res.status(500).json({ success: false, message: "Server Error" });
+}
+};
+
+// GET SINGLE MENU ITEM
+exports.getMenuItemById = async (req, res) => {
+try {
+const menuItem = await MenuItem.findById(req.params.id).populate(
+"restaurant",
+"name"
+);
+
+```
+if (!menuItem) {
+  return res.status(404).json({ success: false, message: "Menu item not found" });
+}
+
+res.status(200).json({ success: true, data: menuItem });
+```
+
+} catch (error) {
+console.error(error);
+res.status(500).json({ success: false, message: "Server Error" });
+}
+};
+

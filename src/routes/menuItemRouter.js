@@ -3,11 +3,11 @@ const router = express.Router();
 
 const {
     getAllMenuItems,
-    getMenuItemsByRestaurant,
     createMenuItem,
-    getSingleMenuItem,
     updateMenuItem,
-    deleteMenuItem
+    deleteMenuItem,
+    getMenuItems,
+    getMenuItemById
 } = require("../controllers/menuItemControllers");
 
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
@@ -16,22 +16,28 @@ const { verifyToken, verifyAdmin } = require("../middleware/auth");
 // --------------------- PUBLIC ROUTES ---------------------
 
 // All menu items
-router.get("/", getAllMenuItems);
+router.get("/",getAllMenuItems);
 
 // Get items of a restaurant
-router.get("/restaurant/:id", getMenuItemsByRestaurant);
+// router.get("/restaurant/:id", getMenuItemsByRestaurant);
 
 // Single menu item
-router.get("/:id", getSingleMenuItem);
+// router.get("/:id", getSingleMenuItem);
+
+// GET all menu items with filters
+router.get("/", getMenuItems);
+
+// GET single menu item by ID
+router.get("/", getMenuItemById);
 
 
 // --------------------- ADMIN ROUTES ---------------------
 
 // Create new menu item
-router.post("/", verifyToken, verifyAdmin, createMenuItem);
+router.post("/", createMenuItem);
 
 // Update menu item
-router.put("/:id", verifyToken, verifyAdmin, updateMenuItem);
+router.put("/:id", updateMenuItem);
 
 // Delete menu item
 router.delete("/:id", verifyToken, verifyAdmin, deleteMenuItem);

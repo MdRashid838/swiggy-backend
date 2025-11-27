@@ -29,17 +29,17 @@ router.get("/admin/dashboard", verifyToken, verifyAdmin, (req, res) => {
 // ------------------ USER ROUTES ------------------
 
 // REGISTER USER
-router.post("/user/register", registerUser);
+router.post("/register", registerUser);
 
 // LOGIN USER
-router.post("/user/login", loginUser);
+router.post("/login", loginUser);
 
 // USER PROFILE (User Only)
-router.get("/user/profile", verifyToken, verifyUser, getProfile);
+router.get("/profile", verifyToken, verifyUser, getProfile);
 
 
 // ------------------ COMMON PROFILE (Admin + User) ------------------
-router.get("/me", verifyToken, (req, res) => {
+router.get("/dashboard", verifyToken, (req, res) => {
     res.json({ message: "Profile Access", user: req.user });
 });
 
