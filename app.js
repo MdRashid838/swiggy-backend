@@ -16,10 +16,7 @@ app.use(cors());
 app.use(express.json());
 
 // mongodb connection
-connectMongoDB("mongodb://127.0.0.1:27017/swiggy-clone")
-.then(() => {
-    console.log("mongoDB connected");
-});
+connectMongoDB();
 
 // routes
 app.use('/restaurant', Restaurant);
