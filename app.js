@@ -13,7 +13,7 @@ const app = express();
 
 // middleware
 app.use(cors({
-  origin: "http://localhost:5173",
+  origin: "https://www-swiggy-clone-mq7x.onrender.com/",
   methods: "GET,POST,PUT,DELETE",
   credentials: true
 }));;
