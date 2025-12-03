@@ -13,7 +13,7 @@ const app = express();
 
 // middleware
 app.use(cors({
-  origin: "https://www-swiggy-clone-mq7x.onrender.com/",
+  origin: "https://swiggy-backend-fyo3.onrender.com",
   methods: "GET,POST,PUT,DELETE",
   credentials: true
 }));;
