@@ -25,39 +25,43 @@ exports.getMenuItemsByRestaurant = async (req, res) => {
 
 // CREATE MENU ITEM (Admin Only)
 exports.createMenuItem = async (req, res) => {
-    try {
-        const { restaurant, name, description, price, image, isVeg , deliveryTime } = req.body;
+  try {
+    const { restaurant, name, description, price, isVeg, deliveryTime } = req.body;
 
-        // Validate required fields
-        if (!restaurant || !name || !price || !image) {
-            return res.status(400).json({ error: "Missing required fields" });
-        }
+    const images = req.file ? [req.file.path] : null;
 
-        // Check if restaurant exists
-        const rest = await Restaurant.findById(restaurant);
-        if (!rest) {
-            return res.status(404).json({ error: "Restaurant not found" });
-        }
-
-        const item = await MenuItem.create({
-            restaurant,
-            name,
-            description,
-            price,
-            image,
-            isVeg,
-            deliveryTime
-        });
-
-        res.status(201).json({
-            message: "Menu item created successfully",
-            item
-        });
-
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    if (!restaurant || !name || !price || !images) {
+      return res.status(400).json({ error: "Missing required fields" });
     }
+
+    const rest = await Restaurant.findById(restaurant);
+    if (!rest) {
+      return res.status(404).json({ error: "Restaurant not found" });
+    }
+
+    const item = await MenuItem.create({
+      restaurant,
+      name,
+      description,
+      price,
+      isVeg,
+      images,
+      deliveryTime: {
+        min: deliveryTime?.min,
+        max: deliveryTime?.max,
+      }
+    });
+
+    res.status(201).json({
+      message: "Menu item created successfully",
+      item
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
+
 
 // GET SINGLE MENU ITEM (Public)
 exports.getSingleMenuItem = async (req, res) => {

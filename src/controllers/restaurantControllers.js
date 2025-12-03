@@ -1,23 +1,29 @@
 const Restaurant = require("../models/Restaurant");
 
 // CREATE RESTAURANT (ADMIN ONLY)
-async function createRestaurant(req, res) {
+async function createRestaurant (req, res) {
   try {
-    const newRestaurant = await Restaurant.create(req.body);
+    const imageUrl = req.file ? req.file.path : null;
 
-    res.status(201).json({
-      success: true,
-      message: "Restaurant created successfully",
-      data: newRestaurant,
+    const newRest = await Restaurant.create({
+      name: req.body.name,
+      rating: req.body.rating,
+      ratingCount: req.body.ratingCount,
+      isOpen: req.body.isOpen,
+      images: imageUrl ? [imageUrl] : [],
+      location: {
+        address: req.body.address,
+        lat: req.body.lat,
+        lng: req.body.lng
+      }
     });
+
+    res.status(201).json({ success: true, data: newRest });
   } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "Create failed",
-      error: err.message,
-    });
+    res.status(500).json({ error: err.message });
   }
-}
+};
+
 
 // GET ALL + FILTERS (USER + ADMIN)
 async function getAllRestaurants(req, res) {

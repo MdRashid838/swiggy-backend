@@ -8,6 +8,12 @@ const {
     updateRestaurant,
     deleteRestaurant
 } = require('../controllers/restaurantControllers');
+const upload = require("../middleware/upload"); // correct path
+const uploadRestaurant = require("../middleware/restaurant");
+
+// router.post("/restaurant", uploadRestaurant.single("image"), createRestaurant);
+
+
 
 const { verifyToken, verifyAdmin } = require('../middleware/auth');
 
@@ -15,7 +21,7 @@ const { verifyToken, verifyAdmin } = require('../middleware/auth');
 // -------------------- ADMIN ONLY ROUTES --------------------
 
 // CREATE RESTAURANT  (Admin Only)
-router.post('/', verifyToken, verifyAdmin, createRestaurant);
+router.post('/', verifyToken, verifyAdmin, uploadRestaurant.single("images"), createRestaurant);
 
 // UPDATE RESTAURANT  (Admin Only)
 router.put('/:id', verifyToken, verifyAdmin, updateRestaurant);

@@ -50,7 +50,7 @@ const MenuItemSchema = new mongoose.Schema(
       max: 80,
     },
 
-    image: {
+    images: {
       type: [String],
       default: [], // NOT required → optional
     },

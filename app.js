@@ -12,8 +12,16 @@ const userRoute =  require('./src/routes/userRouter');
 const app = express();
 
 // middleware
-app.use(cors());
+app.use(cors({
+  origin: "http://localhost:5173",
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true
+}));;
 app.use(express.json());
+const path = require("path");
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/uploadsItems", express.static(path.join(__dirname, "uploadsItems")));
+
 
 // mongodb connection
 connectMongoDB();

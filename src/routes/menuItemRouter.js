@@ -1,5 +1,9 @@
 const express = require("express");
 const router = express.Router();
+const menuItems = require('../middleware/menuItems')
+const uploadMenuItem = require("../middleware/menuItems");
+const updateMenuItemImg = require("../middleware/menuItems");
+
 
 const {
     getAllMenuItems,
@@ -7,7 +11,9 @@ const {
     updateMenuItem,
     deleteMenuItem,
     getMenuItems,
-    getMenuItemById
+    getMenuItemById,
+    getSingleMenuItem,
+    getMenuItemsByRestaurant
 } = require("../controllers/menuItemControllers");
 
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
@@ -19,10 +25,10 @@ const { verifyToken, verifyAdmin } = require("../middleware/auth");
 router.get("/",getAllMenuItems);
 
 // Get items of a restaurant
-// router.get("/restaurant/:id", getMenuItemsByRestaurant);
+router.get("/restaurant/:id", getMenuItemsByRestaurant);
 
 // Single menu item
-// router.get("/:id", getSingleMenuItem);
+router.get("/:id", getSingleMenuItem);
 
 // GET all menu items with filters
 router.get("/", getMenuItems);
@@ -34,10 +40,10 @@ router.get("/", getMenuItemById);
 // --------------------- ADMIN ROUTES ---------------------
 
 // Create new menu item
-router.post("/", createMenuItem);
+router.post("/",uploadMenuItem.single("images"), createMenuItem);
 
 // Update menu item
-router.put("/:id", updateMenuItem);
+router.put("/:id",updateMenuItemImg.single("images"), updateMenuItem);
 
 // Delete menu item
 router.delete("/:id", verifyToken, verifyAdmin, deleteMenuItem);
