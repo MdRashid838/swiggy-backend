@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const connectMongoDB = require("./src/connection");
+const bodyParser= require('body-parser');
 
 const Restaurant = require("./src/routes/restaurantRouter");
 const menuItem = require("./src/routes/menuItemRouter");
@@ -11,10 +12,15 @@ const userRoute = require("./src/routes/userRouter");
 
 const app = express();
 
+app.use(bodyParser.json());
+
+app.use(bodyParser.urlencoded({extended:true}));
+
+
 // middleware
 app.use(
   cors({
-    origin: ["https://www-swiggy-clone-mq7x.onrender.com"],
+    origin: ["https://www-swiggy-clone-mq7x.onrender.com", "http://localhost:5173"],
     methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
