@@ -9,7 +9,7 @@ const {
   deleteRestaurant,
 } = require("../controllers/restaurantControllers");
 
-const parseRestaurantForm = require("../middleware/parseRestaurantForm");
+// const parseRestaurantForm = require("../middleware/parseRestaurantForm");
 const uploadRestaurant = require("../middleware/restaurant");
 
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
@@ -30,20 +30,7 @@ router.put(
   "/:id",
   verifyToken,
   verifyAdmin,
-  async (req, res, next) => {
-    const contentType = req.headers["content-type"] || "";
-    if (contentType.startsWith("multipart/form-data")) {
-      // Use multer only if it's a file upload
-      uploadRestaurant.single("images")(req, res, (err) => {
-        if (err) return next(err);
-        next();
-      });
-    } else {
-      // JSON → skip multer
-      next();
-    }
-  },
-  parseRestaurantForm,
+  uploadRestaurant.single("images"),
   updateRestaurant
 );
 
