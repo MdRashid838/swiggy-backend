@@ -1,47 +1,98 @@
 const express = require("express");
 const router = express.Router();
+const profileImage = require("../middleware/profiles");
 
 const {
-    registerUser,
-    loginUser,
-    registerAdmin,
-    loginAdmin,
-    getProfile
+    // ---------- USER ----------
+    sendRegisterOtp,
+    verifyRegisterOtp,
+    setPassword,
+    loginUser,          // email + password
+    sendLoginOtp,
+    loginWithOtp,
+    getProfile,
+    updateProfile,
+
+    // ---------- ADMIN ----------
+    registerAdmin,      // send OTP (fixed email)
+    verifyAdminOtp,
+    loginAdmin
 } = require("../controllers/usersControllers");
 
-const { verifyToken, verifyAdmin, verifyUser } = require("../middleware/auth");
+const {
+    verifyToken,
+    verifyAdmin,
+    verifyUser
+} = require("../middleware/auth");
 
 
-// ------------------ ADMIN ROUTES ------------------
+// ==================================================
+// ================== ADMIN ROUTES ==================
+// ==================================================
 
-// REGISTER ADMIN  (Public OR can be disabled after first admin)
+// SEND OTP TO FIXED ADMIN EMAIL
 router.post("/admin/register", registerAdmin);
 
-// LOGIN ADMIN
+// VERIFY ADMIN OTP + SET PASSWORD
+router.post("/admin/verify-otp", verifyAdminOtp);
+
+// ADMIN LOGIN (email + password)
 router.post("/admin/login", loginAdmin);
 
-// ADMIN ONLY TEST / DASHBOARD
-router.get("/admin/dashboard", verifyToken, verifyAdmin, (req, res) => {
-    res.json({ message: "Welcome Admin" });
-});
+// ADMIN DASHBOARD (protected)
+router.get(
+    "/admin/dashboard",
+    verifyToken,
+    verifyAdmin,
+    (req, res) => {
+        res.json({ message: "Welcome Admin" });
+    }
+);
 
 
-// ------------------ USER ROUTES ------------------
+// ==================================================
+// =================== USER ROUTES ===================
+// ==================================================
 
-// REGISTER USER
-router.post("/register", registerUser);
+// STEP 1: USER ENTER EMAIL → SEND OTP
+router.post("/register/send-otp", sendRegisterOtp);
 
-// LOGIN USER
+// STEP 2: VERIFY OTP
+router.post("/register/verify-otp", verifyRegisterOtp);
+
+// STEP 3: SET PASSWORD (FINAL REGISTER)
+router.post("/register/set-password", setPassword);
+
+// LOGIN WITH PASSWORD
 router.post("/login", loginUser);
 
-// USER PROFILE (User Only)
-router.get("/profile", verifyToken, verifyUser, getProfile);
+// LOGIN WITH OTP (STEP 1: SEND OTP)
+router.post("/login/send-otp", sendLoginOtp);
+
+// LOGIN WITH OTP (STEP 2: VERIFY OTP)
+router.post("/login/otp", loginWithOtp);
+
+// USER PROFILE (User only)
+// router.get(
+//     "/profile",
+//     verifyToken,
+//     verifyUser,
+//     getProfile
+// );
 
 
-// ------------------ COMMON PROFILE (Admin + User) ------------------
+// ==================================================
+// =========== COMMON (ADMIN + USER) ================
+// ==================================================
+router.get("/profile", verifyToken, getProfile);
+router.patch("/profile",verifyToken , profileImage.single("image"), updateProfile);
+
+
 router.get("/dashboard", verifyToken, (req, res) => {
-    res.json({ message: "Profile Access", user: req.user });
+    res.json({
+        message: "Dashboard Access",
+        user: req.user
+    });
 });
-
 
 module.exports = router;

@@ -9,7 +9,6 @@ const {
   deleteRestaurant,
 } = require("../controllers/restaurantControllers");
 
-// const parseRestaurantForm = require("../middleware/parseRestaurantForm");
 const uploadRestaurant = require("../middleware/restaurant");
 
 const { verifyToken, verifyAdmin } = require("../middleware/auth");
